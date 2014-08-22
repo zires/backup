@@ -20,7 +20,7 @@ source 'https://rubygems.org'
 
 # Specify version requirements to control `bundle update` if needed.
 group :production do
-  gem 'thor'
+  gem 'thor', '~> 0.19.1'
   gem 'open4'
   gem 'fog'
   # gem 'excon' - use version specified by fog
@@ -34,12 +34,14 @@ group :production do
   gem 'hipchat'
   gem 'flowdock'
   gem 'json'
+  gem 'qiniu', '~> 6.3.1'
 end
 
 gem 'rspec'
 gem 'fuubar'
 gem 'mocha'
 gem 'timecop'
+gem 'rake'
 
 # Omitted from Travis CI Environment
 group :no_ci do

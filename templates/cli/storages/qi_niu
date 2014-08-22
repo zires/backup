@@ -1,0 +1,9 @@
+  ##
+  # QiNiu [Storage]
+  #
+  store_with QiNiu do |qiniu|
+    qiniu.access_key = 'my_access_key'
+    qiniu.secret_key = 'my_secret_key'
+    qiniu.bucket     = "my_bucket"
+  end
+
