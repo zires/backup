@@ -6,16 +6,17 @@ Gem::Specification.new do |gem|
   gem.name        = 'backup_zh'
   gem.version     = Backup::VERSION
   gem.platform    = Gem::Platform::RUBY
-  gem.authors     = 'Michael van Rooijen'
-  gem.email       = 'meskyanichi@gmail.com'
-  gem.homepage    = 'https://github.com/meskyanichi/backup'
+  gem.authors     = ['Michael van Rooijen', 'zires']
+  gem.email       = 'zshuaibin@gmail.com'
+  gem.homepage    = 'https://github.com/zires/backup/tree/qi_niu'
   gem.license     = 'MIT'
-  gem.summary     = 'Provides an elegant DSL in Ruby for performing backups on UNIX-like systems.'
+  gem.summary     = 'Fork form https://github.com/meskyanichi/backup and add Qiniu storage support.'
   gem.description = <<-EOS.gsub(/\s+/, ' ').strip
     Backup is a RubyGem, written for UNIX-like operating systems, that allows you to easily perform backup operations
     on both your remote and local environments. It provides you with an elegant DSL in Ruby for modeling your backups.
     Backup has built-in support for various databases, storage protocols/services, syncers, compressors, encryptors
-    and notifiers which you can mix and match. It was built with modularity, extensibility and simplicity in mind.
+    and notifiers which you can mix and match. It was built with modularity, extensibility and simplicity in mind. Please
+    check https://github.com/meskyanichi/backup for more details.
   EOS
 
   gem.files = %x[git ls-files -- lib bin templates README.md LICENSE.md].split("\n")
