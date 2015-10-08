@@ -30,11 +30,14 @@ group :production do
   gem 'net-scp'
   gem 'net-sftp'
   gem 'mail', '= 2.5.4' # patched
+  gem 'pagerduty'
   gem 'twitter'
   gem 'hipchat'
   gem 'flowdock'
   gem 'json'
   gem 'qiniu', '~> 6.3.1'
+  gem 'dogapi'
+  gem 'aws-ses'
 end
 
 gem 'rspec'
@@ -45,9 +48,6 @@ gem 'rake'
 
 # Omitted from Travis CI Environment
 group :no_ci do
-  gem 'guard'
-  gem 'guard-rspec'
-
   gem 'rb-fsevent' # Mac OS X
   gem 'rb-inotify' # Linux
 

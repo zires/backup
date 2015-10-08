@@ -27,7 +27,7 @@ module Backup
           create_modules(
             DSL,
             [ # Databases
-              ['MySQL', 'PostgreSQL', 'MongoDB', 'Redis', 'Riak', 'OpenLDAP'],
+              ['MySQL', 'PostgreSQL', 'MongoDB', 'Redis', 'Riak', 'OpenLDAP', 'SQLite'],
               # Storages
               ['S3', 'CloudFiles', 'Ninefold', 'Dropbox', 'FTP',
               'SFTP', 'SCP', 'RSync', 'Local', 'QiNiu'],
@@ -42,8 +42,8 @@ module Backup
               ],
               # Notifiers
               ['Mail', 'Twitter', 'Campfire', 'Prowl',
-              'Hipchat', 'Pushover', 'HttpPost', 'Nagios',
-              'Slack', 'FlowDock', 'Zabbix']
+              'Hipchat', 'PagerDuty', 'Pushover', 'HttpPost', 'Nagios',
+              'Slack', 'FlowDock', 'Zabbix', 'Ses', 'DataDog', 'Command']
             ]
           )
         end

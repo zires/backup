@@ -7,12 +7,8 @@ module Backup
     class Slack < Base
 
       ##
-      # The Team name
-      attr_accessor :team
-
-      ##
-      # The Integration Token
-      attr_accessor :token
+      # The incoming webhook url
+      attr_accessor :webhook_url
 
       ##
       # The channel to send messages to
@@ -65,20 +61,14 @@ module Backup
       # : Notification will be sent if `on_warning` or `on_success` is `true`.
       #
       def notify!(status)
-        tag = case status
-              when :success then '[Backup::Success]'
-              when :failure then '[Backup::Failure]'
-              when :warning then '[Backup::Warning]'
-              end
-        message = "#{ tag } #{ model.label } (#{ model.trigger })"
-
-        data = { :text => message }
+        data = {
+          :text => message.call(model, :status => status_data_for(status)),
+          :attachments => [attachment(status)]
+        }
         [:channel, :username, :icon_emoji].each do |param|
           val = send(param)
           data.merge!(param => val) if val
         end
-
-        data.merge!(:attachments => [attachment(status)])
 
         options = {
           :headers  => { 'Content-Type' => 'application/x-www-form-urlencoded' },
@@ -151,7 +141,7 @@ module Backup
       end
 
       def uri
-        @uri ||= "https://#{team}.slack.com/services/hooks/incoming-webhook?token=#{token}"
+        @uri ||= webhook_url
       end
     end
   end

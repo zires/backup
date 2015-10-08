@@ -10,6 +10,11 @@ module Backup
       attr_accessor :token
 
       ##
+      # The Hipchat API version
+      # Either 'v1' or 'v2' (default is 'v1')
+      attr_accessor :api_version
+
+      ##
       # Who the notification should appear from
       attr_accessor :from
 
@@ -45,6 +50,7 @@ module Backup
         @success_color  ||= 'yellow'
         @warning_color  ||= 'yellow'
         @failure_color  ||= 'yellow'
+        @api_version    ||= 'v1'
       end
 
       private
@@ -67,18 +73,18 @@ module Backup
       # : Notification will be sent if `on_warning` or `on_success` is `true`.
       #
       def notify!(status)
-        tag, color = case status
-                     when :success then ['[Backup::Success]', success_color]
-                     when :warning then ['[Backup::Warning]', warning_color]
-                     when :failure then ['[Backup::Failure]', failure_color]
-                     end
-        message = "#{ tag } #{ model.label } (#{ model.trigger })"
-        send_message(message, color)
+        status_data = status_data_for(status)
+        msg = message.call(model, :status => status_data)
+        send_message(msg, status_data[:color])
+      end
+
+      def client_options
+        { api_version: @api_version }
       end
 
       # Hipchat::Client will raise an error if unsuccessful.
       def send_message(msg, color)
-        client = HipChat::Client.new(token)
+        client = HipChat::Client.new(token, client_options)
         rooms_to_notify.each do |room|
           client[room].send(from, msg, :color => color, :notify => notify_users)
         end
@@ -88,6 +94,19 @@ module Backup
         Array(rooms_notified).map {|r| r.split(',').map(&:strip) }.flatten
       end
 
+      def status_data_for(status)
+        data = super(status)
+        data[:color] = status_color_for(status)
+        data
+      end
+
+      def status_color_for(status)
+        {
+          :success => success_color,
+          :warning => warning_color,
+          :failure => failure_color
+        }[status]
+      end
     end
   end
 end

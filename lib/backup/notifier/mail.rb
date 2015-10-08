@@ -38,6 +38,18 @@ module Backup
       attr_accessor :to
 
       ##
+      # CC receiver Email Address
+      attr_accessor :cc
+
+      ##
+      # BCC receiver Email Address
+      attr_accessor :bcc
+
+      ##
+      # Set reply to email address
+      attr_accessor :reply_to
+
+      ##
       # SMTP Server Address
       attr_accessor :address
 
@@ -148,14 +160,8 @@ module Backup
       # : backup log, if `on_failure` is `true`.
       #
       def notify!(status)
-        tag = case status
-              when :success then '[Backup::Success]'
-              when :warning then '[Backup::Warning]'
-              when :failure then '[Backup::Failure]'
-              end
-
         email = new_email
-        email.subject = "#{ tag } #{ model.label } (#{ model.trigger })"
+        email.subject = message.call(model, :status => status_data_for(status))
 
         send_log = send_log_on.include?(status)
         template = Backup::Template.new({ :model => model, :send_log => send_log })
@@ -214,8 +220,11 @@ module Backup
         end
 
         email = ::Mail.new
-        email.to   = @to
-        email.from = @from
+        email.to       = to
+        email.from     = from
+        email.cc       = cc
+        email.bcc      = bcc
+        email.reply_to = reply_to
         email
       end
 
@@ -224,7 +233,7 @@ module Backup
 end
 
 # Patch mail v2.5.4 Exim delivery method
-# https://github.com/meskyanichi/backup/issues/446
+# https://github.com/backup/backup/issues/446
 # https://github.com/mikel/mail/pull/546
 module Mail
   class Exim

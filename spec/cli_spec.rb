@@ -204,9 +204,16 @@ describe 'Backup::CLI' do
 
         it 'aborts with status code 3 and logs messages to the console only' do
 
-          Backup::Logger.expects(:error).in_sequence(s).with do |err|
-            err.should be_a(Backup::CLI::Error)
-            err.message.should match(/config load error/)
+          expectations = [
+            Proc.new { |err|
+              err.should be_a(Backup::CLI::Error)
+              err.message.should match(/config load error/)
+            },
+            Proc.new { |err| err.should be_a(String) }
+          ]
+          Backup::Logger.expects(:error).in_sequence(s).times(2).with do |err|
+            expectation = expectations.shift
+            expectation.call(err) if expectation
           end
 
           Backup::Logger.expects(:abort!).in_sequence(s)
@@ -554,7 +561,7 @@ describe 'Backup::CLI' do
         syncers (cloud_files, rsync_local, rsync_pull, rsync_push, s3)
         encryptor (gpg, openssl)
         compressor (bzip2, custom, gzip)
-        notifiers (campfire, flowdock, hipchat, http_post, mail, nagios, prowl, pushover, slack, twitter)
+        notifiers (campfire, command, datadog, flowdock, hipchat, http_post, mail, nagios, pagerduty, prowl, pushover, ses, slack, twitter)
       EOS
 
       out, err = capture_io do

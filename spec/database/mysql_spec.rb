@@ -37,6 +37,7 @@ describe Database::MySQL do
       expect( db.prepare_options    ).to be_nil
       expect( db.sudo_user          ).to be_nil
       expect( db.backup_engine      ).to eq :mysqldump
+      expect( db.prepare_backup     ).to be_true
     end
 
     it 'configures the database' do
@@ -53,6 +54,7 @@ describe Database::MySQL do
         mysql.prepare_options    = 'my_prepare_options'
         mysql.sudo_user          = 'my_sudo_user'
         mysql.backup_engine      = 'my_backup_engine'
+        mysql.prepare_backup     = false
       end
 
       expect( db.database_id        ).to eq 'my_id'
@@ -69,6 +71,7 @@ describe Database::MySQL do
       expect( db.sudo_user          ).to eq 'my_sudo_user'
       expect( db.backup_engine      ).to eq 'my_backup_engine'
       expect( db.verbose            ).to be_false
+      expect( db.prepare_backup     ).to be_false
     end
   end # describe '#initialize'
 
@@ -232,7 +235,7 @@ describe Database::MySQL do
 
   describe '#mysqldump' do
     let(:option_methods) {%w[
-      credential_options connectivity_options user_options
+      user_options credential_options connectivity_options
       name_option tables_to_dump tables_to_skip
     ]}
 
@@ -437,6 +440,19 @@ describe Database::MySQL do
         expect( db.send(:innobackupex).split.join(" ") ).to eq(
           "innobackupex --no-timestamp /tmp/MySQL.bkpdir && " +
           "innobackupex --apply-log /tmp/MySQL.bkpdir && " +
+          "tar --remove-files -cf - -C /tmp MySQL.bkpdir"
+        )
+      end
+    end
+
+    context "with prepare_backup option disabled" do
+      before do
+        db.prepare_backup = false
+      end
+
+      it "does not contain apply-log command" do
+        expect( db.send(:innobackupex).split.join(" ") ).to eq(
+          "innobackupex --no-timestamp /tmp/MySQL.bkpdir 2> /dev/null && " +
           "tar --remove-files -cf - -C /tmp MySQL.bkpdir"
         )
       end

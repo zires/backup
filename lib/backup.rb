@@ -11,6 +11,7 @@ require 'thread'
 
 require 'open4'
 require 'thor'
+require 'shellwords'
 
 require 'excon'
 # Include response.inspect in error messages.
@@ -78,6 +79,7 @@ module Backup
     autoload :Redis,      File.join(DATABASE_PATH, 'redis')
     autoload :Riak,       File.join(DATABASE_PATH, 'riak')
     autoload :OpenLDAP,   File.join(DATABASE_PATH, 'openldap')
+    autoload :SQLite,     File.join(DATABASE_PATH, 'sqlite')
   end
 
   ##
@@ -106,12 +108,16 @@ module Backup
     autoload :Campfire,  File.join(NOTIFIER_PATH, 'campfire')
     autoload :Prowl,     File.join(NOTIFIER_PATH, 'prowl')
     autoload :Hipchat,   File.join(NOTIFIER_PATH, 'hipchat')
+    autoload :PagerDuty, File.join(NOTIFIER_PATH, 'pagerduty')
     autoload :Pushover,  File.join(NOTIFIER_PATH, 'pushover')
     autoload :Slack,     File.join(NOTIFIER_PATH, 'slack')
     autoload :HttpPost,  File.join(NOTIFIER_PATH, 'http_post')
     autoload :Nagios,    File.join(NOTIFIER_PATH, 'nagios')
     autoload :FlowDock,  File.join(NOTIFIER_PATH, 'flowdock')
     autoload :Zabbix,    File.join(NOTIFIER_PATH, 'zabbix')
+    autoload :DataDog,   File.join(NOTIFIER_PATH, 'datadog')
+    autoload :Ses,       File.join(NOTIFIER_PATH, 'ses')
+    autoload :Command,   File.join(NOTIFIER_PATH, 'command')
   end
 
   ##

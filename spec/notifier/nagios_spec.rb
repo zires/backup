@@ -4,7 +4,7 @@ require File.expand_path('../../spec_helper.rb', __FILE__)
 
 module Backup
 describe Notifier::Nagios do
-  let(:model) { Model.new(:test_trigger, 'test label') }
+  let(:model) { Model.new(:test_trigger, 'test model') }
   let(:notifier) { Notifier::Nagios.new(model) }
 
   before do
@@ -69,8 +69,8 @@ describe Notifier::Nagios do
 
     context 'when status is :success' do
       let(:nagios_msg) {
-        "my.service.host\tBackup test_trigger\t0\t" +
-        "Completed Successfully in 12:34:56"
+        "my.service.host\tBackup test_trigger\t0\t"\
+        "[Backup::Success] test model (test_trigger)"
       }
       before { model.stubs(:exit_status).returns(0) }
 
@@ -83,8 +83,8 @@ describe Notifier::Nagios do
 
     context 'when status is :warning' do
       let(:nagios_msg) {
-        "my.service.host\tBackup test_trigger\t1\t" +
-        "Completed Successfully (with Warnings) in 12:34:56"
+        "my.service.host\tBackup test_trigger\t1\t"\
+        "[Backup::Warning] test model (test_trigger)"
       }
       before { model.stubs(:exit_status).returns(1) }
 
@@ -97,7 +97,8 @@ describe Notifier::Nagios do
 
     context 'when status is :failure' do
       let(:nagios_msg) {
-        "my.service.host\tBackup test_trigger\t2\tFailed in 12:34:56"
+        "my.service.host\tBackup test_trigger\t2\t"\
+        "[Backup::Failure] test model (test_trigger)"
       }
       before { model.stubs(:exit_status).returns(2) }
 
